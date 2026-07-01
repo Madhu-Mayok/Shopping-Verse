@@ -190,6 +190,23 @@ http://localhost:8080/swagger-ui/index.html
 * Docker Deployment
 
 ---
+## Screenshots
+
+### Swagger Documentation
+
+![Swagger](screenshots/swagger-homepage.png)
+
+### JWT Authentication
+
+![JWT Login](screenshots/login-jwt.png)
+
+### Product Management
+
+![Add Product](screenshots/add-product.png)
+
+### Order Placement
+
+![Place Order](screenshots/place-order.png)
 
 ## Author
 
