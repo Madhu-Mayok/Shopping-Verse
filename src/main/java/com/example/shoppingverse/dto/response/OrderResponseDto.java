@@ -2,7 +2,6 @@ package com.example.shoppingverse.dto.response;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
 import java.util.List;

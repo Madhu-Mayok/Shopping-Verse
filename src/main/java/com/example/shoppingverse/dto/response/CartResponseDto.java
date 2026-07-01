@@ -1,7 +1,5 @@
 package com.example.shoppingverse.dto.response;
 
-import com.example.shoppingverse.dto.response.ItemResponseDto;
-import com.example.shoppingverse.model.Item;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 

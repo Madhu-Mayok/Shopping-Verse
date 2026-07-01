@@ -3,12 +3,11 @@ package com.example.shoppingverse.transformer;
 import com.example.shoppingverse.dto.request.CustomerRequestDto;
 import com.example.shoppingverse.dto.response.CustomerResponseDto;
 import com.example.shoppingverse.model.Customer;
-import lombok.experimental.UtilityClass;
 
 //@UtilityClass  // for ensuring class is not instantiated but not a std. practice to write
 public class CustomerTransformer {
 
-    public static Customer CustomerRequestDtoToCustomer(CustomerRequestDto customerRequestDto){
+    public static Customer customerRequestDtoToCustomer(CustomerRequestDto customerRequestDto){
 
         return Customer.builder()
                 .name(customerRequestDto.getName())
@@ -18,7 +17,7 @@ public class CustomerTransformer {
                 .build();
     }
 
-    public static CustomerResponseDto CustomerToCustomerResponseDto(Customer customer){
+    public static CustomerResponseDto customerToCustomerResponseDto(Customer customer){
 
         return CustomerResponseDto.builder()
                 .name(customer.getName())

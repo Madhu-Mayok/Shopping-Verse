@@ -1,12 +1,10 @@
 package com.example.shoppingverse.dto.response;
 
 
-        import com.example.shoppingverse.Enum.ProductCategory;
-        import com.example.shoppingverse.Enum.ProductStatus;
-        import jakarta.persistence.EnumType;
-        import jakarta.persistence.Enumerated;
-        import lombok.*;
-        import lombok.experimental.FieldDefaults;
+import com.example.shoppingverse.Enum.ProductCategory;
+import com.example.shoppingverse.Enum.ProductStatus;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 @Data
 @NoArgsConstructor
@@ -26,4 +24,6 @@ public class ProductResponseDto {
     ProductCategory category;
 
     ProductStatus productStatus;
+
+    boolean active;
 }

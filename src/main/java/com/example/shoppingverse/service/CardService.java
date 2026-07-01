@@ -3,6 +3,7 @@ package com.example.shoppingverse.service;
 import com.example.shoppingverse.dto.request.CardRequestDto;
 import com.example.shoppingverse.dto.response.CardResponseDto;
 import com.example.shoppingverse.exception.CustomerNotFoundException;
+import com.example.shoppingverse.exception.InvalidCardException;
 import com.example.shoppingverse.model.Customer;
 import com.example.shoppingverse.repository.CustomerRepository;
 import com.example.shoppingverse.transformer.CardTransformer;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.shoppingverse.model.Card;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -24,6 +26,10 @@ public class CardService {
         Customer customer = customerRepository.findByMobNo(cardRequestDto.getCustomerMobile());
         if(customer==null){
             throw new CustomerNotFoundException("Customer doesn't exist");
+        }
+
+        if(cardRequestDto.getValidTill().before(new Date())){
+            throw new InvalidCardException("Card has already expired");
         }
 
         // create card entity
@@ -42,14 +48,25 @@ public class CardService {
         return cardResponseDto;
     }
 
+//    public String generateMaskedCard(String cardNo){
+//        int cardLength = cardNo.length();
+//        String maskedCard = "";
+//        for(int i = 0;i<cardLength-4;i++){
+//            maskedCard += 'X';
+//        }
+//
+//        maskedCard += cardNo.substring(cardLength-4);
+//        return maskedCard;
+//    }
     public String generateMaskedCard(String cardNo){
-        int cardLength = cardNo.length();
-        String maskedCard = "";
-        for(int i = 0;i<cardLength-4;i++){
-            maskedCard += 'X';
-        }
+    StringBuilder sb = new StringBuilder();
 
-        maskedCard += cardNo.substring(cardLength-4);
-        return maskedCard;
+    //for(int i=0;i<cardNo.length()-4;i++){
+        //        sb.append("X");
+        //    }
+        sb.append("X".repeat(Math.max(0, cardNo.length() - 4)));
+
+    sb.append(cardNo.substring(cardNo.length()-4));
+    return sb.toString();
     }
 }

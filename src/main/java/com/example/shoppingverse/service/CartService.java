@@ -5,13 +5,13 @@ import com.example.shoppingverse.dto.response.OrderResponseDto;
 import com.example.shoppingverse.dto.request.ItemRequestDto;
 import com.example.shoppingverse.dto.request.CheckoutCartRequestDto;
 
-import com.example.shoppingverse.exception.CustomerNotFoundException;
-import com.example.shoppingverse.exception.EmptyCartException;
-import com.example.shoppingverse.exception.InvalidCardException;
+import com.example.shoppingverse.exception.*;
 import com.example.shoppingverse.model.*;
 import com.example.shoppingverse.repository.*;
 import com.example.shoppingverse.transformer.CartTransformer;
 import com.example.shoppingverse.transformer.OrderTransformer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +20,8 @@ import java.util.Date;
 
 @Service
 public class CartService {
+
+    private static final Logger log =  LoggerFactory.getLogger(CartService.class);
 
     @Autowired
     CustomerRepository customerRepository;
@@ -40,10 +42,19 @@ public class CartService {
     @Autowired
     private OrderEntityRepository orderEntityRepository;
 
+    // customer , product deleted ,product available  and quantity--all valid then this method executes
+    // If something doesnt exist is handled in cart service since before reaching this method
     public CartResponseDto addItemToCart(ItemRequestDto itemRequestDto,Item item) {
 
         Customer customer = customerRepository.findByEmailId(itemRequestDto.getCustomerEmail());
-        Product product = productRepository.findById(itemRequestDto.getProductId()).get();
+        Product product = productRepository.findById( itemRequestDto.getProductId()).get();
+
+        log.info("product added to cart with Product ID: {}, Active: {}, Quantity: {}",
+                product.getId(),
+                product.isActive(),
+                product.getAvailableQuantity());
+
+
 
         Cart cart = customer.getCart();
         cart.setCartTotal(cart.getCartTotal() + product.getPrice()*itemRequestDto.getRequiredQuantity());
@@ -58,7 +69,7 @@ public class CartService {
         productRepository.save(product);
 
         //prepare cartResponse Dto
-        return CartTransformer.CartToCartReponseDto(savedCart);
+        return CartTransformer.CartToCartResponseDto(savedCart);
 
     }
 
@@ -76,14 +87,18 @@ public class CartService {
         }
 
         Cart cart = customer.getCart();
-        if(cart.getItems().size()==0){
+        if(cart == null ||
+                cart.getItems().isEmpty()) {
             throw new EmptyCartException("Sorry! The cart is empty");
         }
 
-        OrderEntity order = orderService.placeOrder(cart,card);
-        resetCart(cart);
 
+        OrderEntity order = orderService.placeOrder(cart,card);
         OrderEntity savedOrder = orderEntityRepository.save(order);
+
+        System.out.println("Order Saved : " + savedOrder.getId());
+
+        resetCart(cart);
 
         // prepare response dto
         return OrderTransformer.OrderToOrderResponseDto(savedOrder);

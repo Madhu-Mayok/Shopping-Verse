@@ -15,6 +15,7 @@ public class ProductTransformer {
                 .availableQuantity(productRequestDto.getAvailableQuantity())
                 .category(productRequestDto.getCategory())
                 .productStatus(ProductStatus.AVAILABLE)
+                .active(true)
                 .build();
     }
 
@@ -27,6 +28,7 @@ public class ProductTransformer {
                 .price(product.getPrice())
                 .category(product.getCategory())
                 .availableQuantity(product.getAvailableQuantity())
+                .active(product.isActive())
                 .build();
     }
 }

@@ -36,11 +36,18 @@ public class ItemService {
             throw new ProductNotFoundException("Product doesn't exist");
         }
 
+
+
         Product product = productOptional.get();
+
+        //check product deleted or not -- if deleted throw
+        if(!product.isActive()){
+            throw new ProductNotFoundException(  "Product is no longer available");
+        }
 
         // check for required quantity
         if(product.getAvailableQuantity()< itemRequestDto.getRequiredQuantity()){
-            throw new InsufficientQuantityException("Sorry! Required quantity not avaiable");
+            throw new InsufficientQuantityException("Sorry! Required quantity not available");
         }
 
         // create item

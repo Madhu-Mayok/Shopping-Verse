@@ -24,6 +24,7 @@ public class Cart {
 
     int cartTotal;
 
+    // @JoinColumn -- by default creates/introduces the parent (customer) primary key column as foreign key column in child (cart)
     @OneToOne
     @JoinColumn
     Customer customer;

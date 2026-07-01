@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +29,38 @@ public class Product {
 
     int availableQuantity;
 
+    @Column(nullable = false)
+    boolean active = true;
+
     @Enumerated(EnumType.STRING)
     ProductCategory category;
 
     @Enumerated(EnumType.STRING)
     ProductStatus productStatus;
+
+    @Column(nullable = false, updatable = false)
+    LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    LocalDateTime updatedAt;
+
+    //How do you track when data was created or modified?
+    //You can immediately answer:
+    //Using audit fields like createdAt and updatedAt.
+    //I implemented them using JPA lifecycle callbacks:
+    //@PrePersist and @PreUpdate.
+
+
+    @PrePersist
+    public void prePersist(){
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate(){
+        updatedAt = LocalDateTime.now();
+    }
 
     @ManyToOne
     @JoinColumn

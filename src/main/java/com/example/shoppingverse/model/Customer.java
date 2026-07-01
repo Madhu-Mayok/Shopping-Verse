@@ -32,6 +32,9 @@ public class Customer {
     @Enumerated(EnumType.STRING)
     Gender gender;
 
+    // customer class mapped to cart class in onetoone relationship
+    // mappedBy = customer means -- in child relation (Cart class) , parent (Customer class) is mapped using variable customer
+    // Cascade = CascadeType.All -- any curd operation on parent (customer) , automatically applies to child (cart)
     @OneToOne(mappedBy = "customer",cascade = CascadeType.ALL)
     Cart cart;
 

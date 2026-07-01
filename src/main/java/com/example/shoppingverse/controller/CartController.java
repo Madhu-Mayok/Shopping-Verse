@@ -8,9 +8,12 @@ import com.example.shoppingverse.model.Item;
 import com.example.shoppingverse.repository.CartRepository;
 import com.example.shoppingverse.service.CartService;
 import com.example.shoppingverse.service.ItemService;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,6 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/cart")
+@Tag(
+        name = "Cart APIs",
+        description = "Shopping cart operations"
+)
 public class CartController {
 
     @Autowired
@@ -27,31 +34,18 @@ public class CartController {
     @Autowired
     CartService cartService;
 
-    @Autowired
-    CartRepository cartRepository;
-
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/add")
-    public ResponseEntity addToCart(@RequestBody ItemRequestDto itemRequestDto){
-
-        try{
-            Item item = itemService.createItem(itemRequestDto);
-            CartResponseDto cartResponseDto = cartService.addItemToCart(itemRequestDto,item);
+    public ResponseEntity<ItemRequestDto> addToCart(@Valid @RequestBody ItemRequestDto dto){
+            Item item = itemService.createItem(dto);
+            CartResponseDto cartResponseDto = cartService.addItemToCart(dto,item);
             return new ResponseEntity(cartResponseDto,HttpStatus.CREATED);
-        }
-        catch (Exception e){
-            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
-        }
     }
 
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PostMapping("/checkout")
-    public ResponseEntity checkoutCart(@RequestBody CheckoutCartRequestDto checkoutCartRequestDto){
-
-        try{
-            OrderResponseDto response = cartService.checkoutCart(checkoutCartRequestDto);
+    public ResponseEntity<CheckoutCartRequestDto> checkoutCart(@Valid @RequestBody CheckoutCartRequestDto dto){
+            OrderResponseDto response = cartService.checkoutCart(dto);
             return new ResponseEntity(response,HttpStatus.CREATED);
-        }
-        catch (Exception e){
-            return new ResponseEntity(e.getMessage(),HttpStatus.BAD_REQUEST);
-        }
     }
 }
